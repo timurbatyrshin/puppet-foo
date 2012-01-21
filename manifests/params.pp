@@ -1,255 +1,232 @@
 # Class: foo::params
 #
-# Sets internal variables and defaults for foo module
-# This class is loaded in all the classes that use the values set here 
+# This class defines default parameters used by the main module class foo
+# Operating Systems differences in names and paths are addressed here
 #
-class foo::params  {
+# == Variables
+#
+# Refer to foo class for the variables defined here.
+#
+# == Usage
+#
+# This class is not intended to be used directly.
+# It may be imported or inherited by other classes
+#
+class foo::params {
 
-## DEFAULTS FOR VARIABLES USERS CAN SET
-# (Here are set the defaults, provide your custom variables externally)
-# (The default used is in the line with '')
+  ### Application related parameters
 
-## Example: Full hostname of foo server
-#    $server = $foo_server ? {
-#        ''      => "foo",
-#        default => "${foo_server}",
-#    }
+  $package = $::operatingsystem ? {
+    default => 'foo',
+  }
 
+  $service = $::operatingsystem ? {
+    default                   => 'foo',
+  }
 
-## EXTRA MODULE INTERNAL VARIABLES
-#(add here module specific internal variables)
+  $service_status = $::operatingsystem ? {
+    default => true,
+  }
 
+  $process = $::operatingsystem ? {
+    default => 'foo',
+  }
 
+  $process_args = $::operatingsystem ? {
+    default => '',
+  }
 
-## MODULE INTERNAL VARIABLES
-# (Modify to adapt to unsupported OSes)
+  $config_dir = $::operatingsystem ? {
+    default => '/etc/foo',
+  }
 
-    $packagename = $operatingsystem ? {
-        solaris => "CSWfoo",
-        debian  => "foo",
-        ubuntu  => "foo",
-        default => "foo",
-    }
+  $config_file = $::operatingsystem ? {
+    default => '/etc/foo/foo.conf',
+  }
 
-    $servicename = $operatingsystem ? {
-        debian  => "foo",
-        ubuntu  => "foo",
-        default => "foo",
-    }
+  $config_file_mode = $::operatingsystem ? {
+    default => '0644',
+  }
 
-    $processname = $operatingsystem ? {
-        default => "foo",
-    }
+  $config_file_owner = $::operatingsystem ? {
+    default => 'root',
+  }
 
-    $hasstatus = $operatingsystem ? {
-        debian  => false,
-        ubuntu  => false,
-        default => true,
-    }
+  $config_file_group = $::operatingsystem ? {
+    default => 'root',
+  }
 
-    $configfile = $operatingsystem ? {
-        freebsd => "/usr/local/etc/foo/foo.conf",
-        default => "/etc/foo/foo.conf",
-    }
+  $config_file_init = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/foo',
+    default                   => '/etc/sysconfig/foo',
+  }
 
-    $configfile_mode = $operatingsystem ? {
-        default => "644",
-    }
+  $pid_file = $::operatingsystem ? {
+    default => '/var/run/foo.pid',
+  }
 
-    $configfile_owner = $operatingsystem ? {
-        default => "root",
-    }
+  $data_dir = $::operatingsystem ? {
+    default => '/etc/foo',
+  }
 
-    $configfile_group = $operatingsystem ? {
-        default => "root",
-    }
+  $log_dir = $::operatingsystem ? {
+    default => '/var/log/foo',
+  }
 
-    $configdir = $operatingsystem ? {
-        default => "/etc/foo",
-    }
+  $log_file = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/ => '/var/log/syslog',
+    default                   => '/var/log/messages',
+  }
 
-    $initconfigfile = $operatingsystem ? {
-        debian  => "/etc/default/foo",
-        ubuntu  => "/etc/default/foo",
-        default => "/etc/sysconfig/foo",
-    }
-    
-    # Used by monitor class
-    $pidfile = $operatingsystem ? {
-        default => "/var/run/food.pid",
-    }
+  $port = $::foo_port ? {
+    ''      => '42',                    # Default value
+    default => $::foo_port,
+  }
 
-    # Used by backup class
-    $datadir = $operatingsystem ? {
-        default => "/var/lib/foo",
-    }
-
-    # Used by backup class - Provide the file name, if there's no dedicated dir
-    $logdir = $operatingsystem ? {
-        default => "/var/log/foo",
-    }
-
-    # Used by monitor and firewall class
-    # If you need to define additional ports, call them $protocol1/$port1 and add the relevant
-    # parts in firewall.pp and monitor.pp
-    $protocol = "tcp"
-    $port = "80"
-    
+  $protocol = $::foo_protocol ? {
+    ''      => 'tcp',                   # Default value
+    default => $::foo_protocol,
+  }
 
 
-## DEFAULTS FOR MONITOR CLASS
-# These are settings that influence the (optional) foo::monitor class
-# You can define these variables or leave the defaults
-# The apparently complex variables assignements below follow this logic:
-# - If no user variable is set, a reasonable default is used
-# - If the user has set a host-wide variable (ex: $monitor_target ) that one is set
-# - The host-wide variable can be overriden by a module specific one (ex: $foo_monitor_target)
+  ### General variables that affect module's behaviour
+  # They can be set at top scope level or in a ENC
 
-    # How the monitor server refers to the monitor target 
-    $monitor_target_real = $foo_monitor_target ? {
-        ''      => $monitor_target ? {
-           ''      => "${fqdn}",
-           default => $monitor_target,
-        },
-        default => "$foo_monitor_target",
-    }
+  $my_class = $::foo_my_class ? {
+    ''      => '',                      # Default value
+    default => $::foo_my_class,
+  }
 
-    # BaseUrl to access this service
-    $monitor_baseurl_real = $foo_monitor_baseurl ? {
-        ''      => $monitor_baseurl ? {
-           ''      => "http://${fqdn}",
-           default => $monitor_baseurl,
-        },
-        default => "${foo_monitor_baseurl}",
-    }
+  $source = $::foo_source ? {
+    ''      => '',                      # Default value
+    default => $::foo_source,
+  }
 
-    # Pattern to look for in the URL defined in foo::monitor class
-    $monitor_url_pattern = $foo_monitor_url_pattern ? {
-        ''      => "OK",
-        default => "${foo_monitor_url_pattern}",
-    }
+  $source_dir = $::foo_source_dir ? {
+    ''      => '',                      # Default value
+    default => $::foo_source_dir,
+  }
 
-    # If foo port monitoring is enabled 
-    $monitor_port_enable = $foo_monitor_port ? {
-        ''      => $monitor_port ? {
-           ''      => true,
-           default => $monitor_port,
-        },
-        default => $foo_monitor_port,
-    }
+  $source_dir_purge = $::foo_source_dir_purge ? {
+    ''      => false,                   # Default value
+    default => $::foo_source_dir_purge,
+  }
 
-    # If foo url monitoring is enabled 
-    $monitor_url_enable = $foo_monitor_url ? {
-        ''      => $monitor_url ? {
-           ''      => false,
-           default => $monitor_url,
-        },
-        default => $foo_monitor_url,
-    }
+  $template = $::foo_template ? {
+    ''      => '',                      # Default value
+    default => $::foo_template,
+  }
 
-    # If foo process monitoring is enabled 
-    $monitor_process_enable = $foo_monitor_process ? {
-        ''      => $monitor_process ? {
-           ''      => true,
-           default => $monitor_process,
-        },
-        default => $foo_monitor_process,
-    }
+  $options = $::foo_options ? {
+    ''      => '',                      # Default value
+    default => $::foo_options,
+  }
 
-    # If foo plugin monitoring is enabled 
-    $monitor_plugin_enable = $foo_monitor_plugin ? {
-        ''      => $monitor_plugin ? {
-           ''      => false,
-           default => $monitor_plugin,
-        },
-        default => $foo_monitor_plugin,
-    }
+  $absent = $::foo_absent ? {
+    ''      => false,                   # Default value
+    default => $::foo_absent,
+  }
 
-## DEFAULTS FOR BACKUP CLASS
-# These are settings that influence the (optional) foo::backup class
-# You can define these variables or leave the defaults
+  $disable = $::foo_disable ? {
+    ''      => false,                   # Default value
+    default => $::foo_disable,
+  }
 
-    # How the backup server refers to the backup target 
-    $backup_target_real = $foo_backup_target ? {
-        ''      => $backup_target ? {
-           ''      => "${fqdn}",
-           default => $backup_target,
-        },
-        default => "$foo_backup_target",
-    }
-  
-    # Frequency of backups
-    $backup_frequency = $foo_backup_frequency ? {
-        ''      => "daily",
-        default => "$foo_backup_frequency",
-    }
-
-    # If foo data have to be backed up
-    $backup_data_enable = $foo_backup_data ? {
-        ''      => $backup_data ? {
-           ''      => true,
-           default => $backup_data,
-        },
-        default => $foo_backup_data,
-    }
-
-    # If foo logs have to be backed up
-    $backup_log_enable = $foo_backup_log ? {
-        ''      => $backup_log ? {
-           ''      => true,
-           default => $backup_log,
-        },
-        default => $foo_backup_log,
-    }
+  $disableboot = $::foo_disableboot ? {
+    ''      => false,                   # Default value
+    default => $::foo_disableboot,
+  }
 
 
-## DEFAULTS FOR FIREWALL CLASS
-# These are settings that influence the (optional) foo::firewall class
-# You can define these variables or leave the defaults
+  ### General module variables that can have a site or per module default
+  # They can be set at top scope level or in a ENC
 
-    # Source IPs that can access this service - Use iptables friendly format
-    $firewall_source_real = $foo_firewall_source ? {
-        ''      => $firewall_source ? {
-           ''      => "0.0.0.0/0",
-           default => $firewall_source,
-        },
-        default => "$foo_firewall_source",
-    }
+  $monitor = $::foo_monitor ? {
+    ''      => $::monitor ? {
+      ''      => false,                # Default value
+      default => $::monitor,
+    },
+    default => $::foo_monitor,
+  }
 
-    # Destination IP to use for this host (Default facter's $ipaddress)
-    $firewall_destination_real = $foo_firewall_destination ? {
-        ''      => $firewall_destination ? {
-           ''      => "${ipaddress}",
-           default => $firewall_destination,
-        },
-        default => "$foo_firewall_destination",
-    }
+  $monitor_tool = $::foo_monitor_tool ? {
+    ''      => $::monitor_tool ? {
+      ''      => '',                   # Default value
+      default => $::monitor_tool,
+    },
+    default => $::foo_monitor_tool,
+  }
 
-    # If firewall filter is enabled
-    $firewall_enable = $foo_firewall_enable ? {
-        ''      => $firewall_enable ? {
-           ''      => true,
-           default => $firewall_enable,
-        },
-        default => $foo_firewall_enable,
-    }
+  $monitor_target = $::foo_monitor_target ? {
+    ''      => $::monitor_target ? {
+      ''      => $::ipaddress,         # Default value
+      default => $::monitor_target,
+    },
+    default => $::foo_monitor_target,
+  }
 
-## FILE SERVING SOURCE
-# Sets the correct source for static files
-# In order to provide files from different sources without modifying the module
-# you can override the default source path setting the variable $base_source
-# Ex: $base_source="puppet://ip.of.fileserver" or $base_source="puppet://$servername/myprojectmodule"
-# What follows automatically manages the new source standard (with /modules/) from 0.25 
+  $firewall = $::foo_firewall ? {
+    ''      => $::firewall ? {
+      ''      => false,                # Default value
+      default => $::firewall,
+    },
+    default => $::foo_firewall,
+  }
 
-    case $base_source {
-        '': {
-            $general_base_source = $puppetversion ? {
-                /(^0.25)/ => "puppet:///modules",
-                /(^0.)/   => "puppet://$servername",
-                default   => "puppet:///modules",
-            }
-        }
-        default: { $general_base_source=$base_source }
-    }
+  $firewall_tool = $::foo_firewall_tool ? {
+    ''      => $::firewall_tool ? {
+      ''      => '',                   # Default value
+      default => $::firewall_tool,
+    },
+    default => $::foo_firewall_tool,
+  }
+
+  $firewall_src = $::foo_firewall_src ? {
+    ''      => $::firewall_src ? {
+      ''      => '0.0.0.0/0',          # Default value
+      default => $::firewall_src,
+    },
+    default => $::foo_firewall_src,
+  }
+
+  $firewall_dst = $::foo_firewall_dst ? {
+    ''      => $::firewall_dst ? {
+      ''      => $::ip_address,        # Default value
+      default => $::firewall_dst,
+    },
+    default => $::foo_firewall_dst,
+  }
+
+  $puppi = $::foo_puppi ? {
+    ''      => $::puppi ? {
+      ''      => false,                # Default value
+      default => $::puppi,
+    },
+    default => $::foo_puppi,
+  }
+
+  $puppi_helper = $::foo_puppi_helper ? {
+    ''      => $::puppi_helper ? {
+      ''      => 'standard',           # Default value
+      default => $::puppi_helper,
+    },
+    default => $::foo_puppi_helper,
+  }
+
+  $debug = $::foo_debug ? {
+    ''      => $::debug ? {
+      ''      => false,                # Default value
+      default => $::debug,
+    },
+    default => $::foo_debug,
+  }
+
+  $audit_only = $::foo_audit_only ? {
+    ''      => $::audit_only ? {
+      ''      => false,                # Default value
+      default => $::audit_only,
+    },
+    default => $::foo_audit_only,
+  }
 
 }
