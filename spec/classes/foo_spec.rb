@@ -127,7 +127,7 @@ describe 'foo' do
     it { should contain_file('puppi_foo').with_ensure('present') }
     it 'should generate a valid puppi data file' do
       content = catalogue.resource('file', 'puppi_foo').send(:parameters)[:content]
-      expected_lines = [ '  puppi_helper: myhelper' , '  puppi: true' ]
+      expected_lines = [ '  puppi_helper: myhelper' ]
       (content.split("\n") & expected_lines).should == expected_lines
     end
   end
