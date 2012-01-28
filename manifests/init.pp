@@ -355,15 +355,11 @@ class foo (
 
   ### Provide puppi data, if enabled ( puppi => true )
   if $foo::bool_puppi == true {
-    $puppivars=get_class_args()
-    file { 'puppi_foo':
-      ensure  => $foo::manage_file,
-      path    => "${settings::vardir}/puppi/foo",
-      mode    => '0644',
-      owner   => 'root',
-      group   => 'root',
-      require => Class['puppi'],
-      content => inline_template('<%= puppivars.to_yaml %>'),
+    $classvars=get_class_args()
+    puppi::ze { 'foo':
+      ensure    => $foo::manage_file,
+      variables => $classvars,
+      helper    => $foo::puppi_helper,
     }
   }
 
