@@ -165,4 +165,45 @@ describe 'foo' do
     end
   end
 
+  describe 'Test params lookup' do
+    let(:facts) { { :monitor => true , :ipaddress => '10.42.42.42' } }
+    let(:params) { { :port => '42' } }
+
+    it 'should honour top scope global vars' do
+      content = catalogue.resource('monitor::process', 'foo_process').send(:parameters)[:enable]
+      content.should == true
+    end
+  end
+
+  describe 'Test params lookup' do
+    let(:facts) { { :foo_monitor => true , :ipaddress => '10.42.42.42' } }
+    let(:params) { { :port => '42' } }
+
+    it 'should honour module specific vars' do
+      content = catalogue.resource('monitor::process', 'foo_process').send(:parameters)[:enable]
+      content.should == true
+    end
+  end
+
+  describe 'Test params lookup' do
+    let(:facts) { { :monitor => false , :foo_monitor => true , :ipaddress => '10.42.42.42' } }
+    let(:params) { { :port => '42' } }
+
+    it 'should honour top scope module specific over global vars' do
+      content = catalogue.resource('monitor::process', 'foo_process').send(:parameters)[:enable]
+      content.should == true
+    end
+  end
+
+  describe 'Test params lookup' do
+    let(:facts) { { :monitor => false , :ipaddress => '10.42.42.42' } }
+    let(:params) { { :monitor => true , :firewall => true, :port => '42' } }
+
+    it 'should honour passed params over global vars' do
+      content = catalogue.resource('monitor::process', 'foo_process').send(:parameters)[:enable]
+      content.should == true
+    end
+  end
+
 end
+

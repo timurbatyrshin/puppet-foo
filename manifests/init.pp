@@ -66,7 +66,7 @@
 #
 # [*monitor_target*]
 #   The Ip address or hostname to use as a target for monitoring tools.
-#   Default is the fact $ip_address
+#   Default is the fact $ipaddress
 #   Can be defined also by the (top scope) variables $foo_monitor_target
 #   and $monitor_target
 #
@@ -133,8 +133,11 @@
 #   The name of foo process
 #
 # [*process_args*]
-#   The name of foo arguments.
+#   The name of foo arguments. Used by puppi and monitor.
 #   Used only in case the foo process name is generic (java, ruby...)
+#
+# [*process_user*]
+#   The name of the user foo runs with. Used by puppi and monitor.
 #
 # [*config_dir*]
 #   Main configuration directory. Used by puppi
@@ -191,43 +194,44 @@
 #   Alessandro Franceschi <al@lab42.it/>
 #
 class foo (
-  $my_class          = $foo::params::my_class,
-  $source            = $foo::params::source,
-  $source_dir        = $foo::params::source_dir,
-  $source_dir_purge  = $foo::params::source_dir_purge,
-  $template          = $foo::params::template,
-  $options           = $foo::params::options,
-  $absent            = $foo::params::absent,
-  $disable           = $foo::params::disable,
-  $disableboot       = $foo::params::disableboot,
-  $monitor           = $foo::params::monitor,
-  $monitor_tool      = $foo::params::monitor_tool,
-  $monitor_target    = $foo::params::monitor_target,
-  $puppi             = $foo::params::puppi,
-  $puppi_helper      = $foo::params::puppi_helper,
-  $firewall          = $foo::params::firewall,
-  $firewall_tool     = $foo::params::firewall_tool,
-  $firewall_src      = $foo::params::firewall_src,
-  $firewall_dst      = $foo::params::firewall_dst,
-  $debug             = $foo::params::debug,
-  $audit_only        = $foo::params::audit_only,
-  $package           = $foo::params::package,
-  $service           = $foo::params::service,
-  $service_status    = $foo::params::service_status,
-  $process           = $foo::params::process,
-  $process_args      = $foo::params::process_args,
-  $config_dir        = $foo::params::config_dir,
-  $config_file       = $foo::params::config_file,
-  $config_file_mode  = $foo::params::config_file_mode,
-  $config_file_owner = $foo::params::config_file_owner,
-  $config_file_group = $foo::params::config_file_group,
-  $config_file_init  = $foo::params::config_file_init,
-  $pid_file          = $foo::params::pid_file,
-  $data_dir          = $foo::params::data_dir,
-  $log_dir           = $foo::params::log_dir,
-  $log_file          = $foo::params::log_file,
-  $port              = $foo::params::port,
-  $protocol          = $foo::params::protocol
+  $my_class          = params_lookup( 'my_class' ),
+  $source            = params_lookup( 'source' ),
+  $source_dir        = params_lookup( 'source_dir' ),
+  $source_dir_purge  = params_lookup( 'source_dir_purge' ),
+  $template          = params_lookup( 'template' ),
+  $options           = params_lookup( 'options' ),
+  $absent            = params_lookup( 'absent' ),
+  $disable           = params_lookup( 'disable' ),
+  $disableboot       = params_lookup( 'disableboot' ),
+  $monitor           = params_lookup( 'monitor' , 'global' ),
+  $monitor_tool      = params_lookup( 'monitor_tool' , 'global' ),
+  $monitor_target    = params_lookup( 'monitor_target' , 'global' ),
+  $puppi             = params_lookup( 'puppi' , 'global' ),
+  $puppi_helper      = params_lookup( 'puppi_helper' , 'global' ),
+  $firewall          = params_lookup( 'firewall' , 'global' ),
+  $firewall_tool     = params_lookup( 'firewall_tool' , 'global' ),
+  $firewall_src      = params_lookup( 'firewall_src' , 'global' ),
+  $firewall_dst      = params_lookup( 'firewall_dst' , 'global' ),
+  $debug             = params_lookup( 'debug' , 'global' ),
+  $audit_only        = params_lookup( 'audit_only' , 'global' ),
+  $package           = params_lookup( 'package' ),
+  $service           = params_lookup( 'service' ),
+  $service_status    = params_lookup( 'service_status' ),
+  $process           = params_lookup( 'process' ),
+  $process_args      = params_lookup( 'process_args' ),
+  $process_user      = params_lookup( 'process_user' ),
+  $config_dir        = params_lookup( 'config_dir' ),
+  $config_file       = params_lookup( 'config_file' ),
+  $config_file_mode  = params_lookup( 'config_file_mode' ),
+  $config_file_owner = params_lookup( 'config_file_owner' ),
+  $config_file_group = params_lookup( 'config_file_group' ),
+  $config_file_init  = params_lookup( 'config_file_init' ),
+  $pid_file          = params_lookup( 'pid_file' ),
+  $data_dir          = params_lookup( 'data_dir' ),
+  $log_dir           = params_lookup( 'log_dir' ),
+  $log_file          = params_lookup( 'log_file' ),
+  $port              = params_lookup( 'port' ),
+  $protocol          = params_lookup( 'protocol' )
   ) inherits foo::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)
@@ -369,7 +373,7 @@ class foo (
     monitor::port { "foo_${foo::protocol}_${foo::port}":
       protocol => $foo::protocol,
       port     => $foo::port,
-      target   => $foo::params::monitor_target,
+      target   => $foo::monitor_target,
       tool     => $foo::monitor_tool,
       enable   => $foo::manage_monitor,
     }
@@ -377,6 +381,8 @@ class foo (
       process  => $foo::process,
       service  => $foo::service,
       pidfile  => $foo::pid_file,
+      user     => $foo::process_user,
+      argument => $foo::process_args,
       tool     => $foo::monitor_tool,
       enable   => $foo::manage_monitor,
     }
