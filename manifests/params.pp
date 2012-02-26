@@ -21,7 +21,7 @@ class foo::params {
   }
 
   $service = $::operatingsystem ? {
-    default                   => 'foo',
+    default => 'foo',
   }
 
   $service_status = $::operatingsystem ? {
@@ -78,7 +78,7 @@ class foo::params {
   }
 
   $log_file = $::operatingsystem ? {
-    default                   => '/var/log/foo/foo.log',
+    default => '/var/log/foo/foo.log',
   }
 
   $port = '42'
