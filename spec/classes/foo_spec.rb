@@ -14,7 +14,7 @@ describe 'foo' do
   end
 
   describe 'Test standard installation with monitoring and firewalling' do
-    let(:params) { {:monitor => true , :firewall => true, :port => '42' } }
+    let(:params) { {:monitor => true , :firewall => true, :port => '42', :protocol => 'tcp' } }
 
     it { should contain_package('foo').with_ensure('present') }
     it { should contain_service('foo').with_ensure('running') }
@@ -31,7 +31,7 @@ describe 'foo' do
   end
 
   describe 'Test decommissioning - absent' do
-    let(:params) { {:absent => true, :monitor => true , :firewall => true, :port => '42'} }
+    let(:params) { {:absent => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
 
     it 'should remove Package[foo]' do should contain_package('foo').with_ensure('absent') end 
     it 'should stop Service[foo]' do should contain_service('foo').with_ensure('stopped') end
@@ -48,7 +48,7 @@ describe 'foo' do
   end
 
   describe 'Test decommissioning - disable' do
-    let(:params) { {:disable => true, :monitor => true , :firewall => true, :port => '42'} }
+    let(:params) { {:disable => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
 
     it { should contain_package('foo').with_ensure('present') }
     it 'should stop Service[foo]' do should contain_service('foo').with_ensure('stopped') end
@@ -65,7 +65,7 @@ describe 'foo' do
   end
 
   describe 'Test decommissioning - disableboot' do
-    let(:params) { {:disableboot => true, :monitor => true , :firewall => true, :port => '42'} }
+    let(:params) { {:disableboot => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
   
     it { should contain_package('foo').with_ensure('present') }
     it { should_not contain_service('foo').with_ensure('present') }
@@ -165,7 +165,7 @@ describe 'foo' do
   end
 
   describe 'Test OldGen Module Set Integration' do
-    let(:params) { {:monitor => "yes" , :monitor_tool => "puppi" , :firewall => "yes" , :firewall_tool => "iptables" , :puppi => "yes" , :port => "42" } }
+    let(:params) { {:monitor => "yes" , :monitor_tool => "puppi" , :firewall => "yes" , :firewall_tool => "iptables" , :puppi => "yes" , :port => "42" , :protocol => 'tcp' } }
 
     it 'should generate monitor resources' do
       content = catalogue.resource('monitor::process', 'foo_process').send(:parameters)[:tool]
