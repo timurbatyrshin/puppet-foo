@@ -60,7 +60,7 @@ For detailed info about the logic and usage patterns of Example42 modules check 
           template => 'example42/foo/foo.conf.erb',
         }
 
-* Automaticallly include a custom subclass
+* Automatically include a custom subclass
 
         class { 'foo':
           my_class => 'foo::example42',
