@@ -13,6 +13,11 @@ describe 'foo' do
     it { should contain_file('foo.conf').with_ensure('present') }
   end
 
+  describe 'Test installation of a specific version' do
+    let(:params) { {:version => '1.0.42' } }
+    it { should contain_package('foo').with_ensure('1.0.42') }
+  end
+
   describe 'Test standard installation with monitoring and firewalling' do
     let(:params) { {:monitor => true , :firewall => true, :port => '42', :protocol => 'tcp' } }
 
