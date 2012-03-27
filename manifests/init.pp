@@ -284,7 +284,7 @@ class foo (
   }
 
   $manage_service_autorestart = $foo::bool_service_autorestart ? {
-    true    => 'Service[foo]',
+    true    => Service[foo],
     false   => undef,
   }
 
