@@ -414,8 +414,8 @@ class foo (
   ### Firewall management, if enabled ( firewall => true )
   if $foo::bool_firewall == true {
     firewall { "foo_${foo::protocol}_${foo::port}":
-      source      => $foo::firewall_source,
-      destination => $foo::firewall_destination,
+      source      => $foo::firewall_src,
+      destination => $foo::firewall_dst,
       protocol    => $foo::protocol,
       port        => $foo::port,
       action      => 'allow',
