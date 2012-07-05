@@ -211,7 +211,7 @@ class foo (
   $source_dir_purge    = params_lookup( 'source_dir_purge' ),
   $template            = params_lookup( 'template' ),
   $service_autorestart = params_lookup( 'service_autorestart' , 'global' ),
-  $options             = params_lookup( 'options' ),
+  $options             = params_lookup( 'options', local, hash ),
   $version             = params_lookup( 'version' ),
   $absent              = params_lookup( 'absent' ),
   $disable             = params_lookup( 'disable' ),
