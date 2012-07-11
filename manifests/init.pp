@@ -340,7 +340,7 @@ class foo (
 
   $manage_file_content = $foo::template ? {
     ''        => undef,
-    default   => template($foo::template),
+    default   => rev_template($foo::template),
   }
 
   ### Managed resources
