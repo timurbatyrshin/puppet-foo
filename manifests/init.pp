@@ -125,6 +125,17 @@
 #   Can be defined also by the (top scope) variables $foo_audit_only
 #   and $audit_only
 #
+# [*zabbix*]
+#   Set to 'true' if you intend to monitor Redis through Zabbix. You'll still
+#   need to link the box with Redis Zabbix template in Zabbix console.
+#   Can be defined also by the (top scope) variables $redis_zabbix
+#   and $zabbix
+#
+# [*backup*]
+#   Set to 'true' if you intend taking backups of Redis through do-backup tool.
+#   You'll still need to add and configure the 'backup' class to puppet.
+#
+#
 # Default class params - As defined in foo::params.
 # Note that these variables are mostly defined and used in the module itself,
 # overriding the default values might not affected all the involved components.
@@ -244,7 +255,9 @@ class foo (
   $log_dir             = params_lookup( 'log_dir' ),
   $log_file            = params_lookup( 'log_file' ),
   $port                = params_lookup( 'port' ),
-  $protocol            = params_lookup( 'protocol' )
+  $protocol            = params_lookup( 'protocol' ),
+  $zabbix              = params_lookup( 'zabbix' ),
+  $backup              = params_lookup( 'backup' )
   ) inherits foo::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)
@@ -257,6 +270,8 @@ class foo (
   $bool_firewall=any2bool($firewall)
   $bool_debug=any2bool($debug)
   $bool_audit_only=any2bool($audit_only)
+  $bool_zabbix=any2bool($zabbix)
+  $bool_backup=any2bool($backup)
 
   ### Definition of some variables used in the module
   $manage_package = $foo::bool_absent ? {
@@ -436,6 +451,14 @@ class foo (
       group   => 'root',
       content => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime.*|path|timestamp|free|.*password.*|.*psk.*|.*key)/ }.to_yaml %>'),
     }
+  }
+
+  if $foo::bool_zabbix == true {
+    include foo::zabbix
+  }
+
+  if $foo::bool_backup == true {
+    include foo::backup
   }
 
 }

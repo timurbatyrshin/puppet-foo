@@ -109,5 +109,7 @@ class foo::params {
   $puppi_helper = 'standard'
   $debug = false
   $audit_only = false
+  $zabbix = false
+  $backup = false
 
 }
